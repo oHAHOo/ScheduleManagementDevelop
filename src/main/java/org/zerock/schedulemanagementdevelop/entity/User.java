@@ -1,6 +1,7 @@
 package org.zerock.schedulemanagementdevelop.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +22,14 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String email;
 
-    public User(String username, String email) {
+    @Size(min=8)
+    @Column(nullable = false)
+    private String password;
+
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
+        this.password = password;
     }
 
     public void updateUser(String  username, String email) {

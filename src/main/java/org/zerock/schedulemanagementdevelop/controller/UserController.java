@@ -1,5 +1,6 @@
 package org.zerock.schedulemanagementdevelop.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/users")
-    public ResponseEntity<CreateUserResponse> saveUser(@RequestBody CreateUserRequest createUserRequest) {
+    public ResponseEntity<CreateUserResponse> saveUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(createUserRequest));
     }
 
