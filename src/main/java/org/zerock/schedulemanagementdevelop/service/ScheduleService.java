@@ -19,8 +19,8 @@ public class ScheduleService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CreateScheduleResponse saveSchedule(CreateScheduleRequest createScheduleRequest){
-        User user = userRepository.findById(createScheduleRequest.getUserId()).orElseThrow( () -> new IllegalStateException("User not found"));
+    public CreateScheduleResponse saveSchedule(CreateScheduleRequest createScheduleRequest, Long userId){
+        User user = userRepository.findById(userId).orElseThrow( () -> new IllegalStateException("User not found"));
         Schedule schedule = new Schedule(
                 user,
                 createScheduleRequest.getTitle(),
@@ -82,19 +82,24 @@ public class ScheduleService {
     }
 
     @Transactional
-    public UpdateScheduleResponse updateSchedule(Long id, UpdateScheduleRequest updateScheduleRequest) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalStateException("Schedule not found"));
+    public UpdateScheduleResponse updateSchedule(Long scheduleId, UpdateScheduleRequest updateScheduleRequest, Long userId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new IllegalStateException("Schedule not found"));
+
+        if(!schedule.getUser().getId().equals(userId)){
+            throw new IllegalStateException("수정 권한이 없습니다.");
+        }
         schedule.updateSchedule(updateScheduleRequest.getTitle(),updateScheduleRequest.getContent());
         return new UpdateScheduleResponse(schedule.getId(), schedule.getTitle(), schedule.getContent(), schedule.getModifiedAt());
         }
 
     @Transactional
-    public void deleteSchedule(Long id) {
+    public void deleteSchedule(Long scheduleId, Long userId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new IllegalStateException("일정을 찾을 수 없습니다."));
         //일정이 없으면 예외
-        if (!scheduleRepository.existsById(id)) {
-            throw new IllegalStateException("Schedule not found");
+        if(!schedule.getUser().getId().equals(userId)){
+            throw new IllegalStateException("삭제 권한이 없습니다.");
         }
-        scheduleRepository.deleteById(id);
+        scheduleRepository.deleteById(scheduleId);
     }
 }
 

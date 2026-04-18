@@ -1,9 +1,12 @@
 package org.zerock.schedulemanagementdevelop.controller;
 
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.schedulemanagementdevelop.dto.UserDto.SessionUser;
 import org.zerock.schedulemanagementdevelop.service.ScheduleService;
 import org.zerock.schedulemanagementdevelop.dto.ScheduleDto.*;
 
@@ -16,8 +19,12 @@ public class ScheduleController {
 
     //일정 등록
     @PostMapping("/schedules")
-    public ResponseEntity<CreateScheduleResponse> saveSchedule(@RequestBody CreateScheduleRequest createScheduleRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.saveSchedule(createScheduleRequest));
+    public ResponseEntity<CreateScheduleResponse> saveSchedule(@Valid @RequestBody CreateScheduleRequest createScheduleRequest, HttpSession httpSession) {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
+        if(sessionUser==null){
+            throw new IllegalStateException("로그인이 필요합니다");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.saveSchedule(createScheduleRequest,sessionUser.getId()));
     }
 
     //단일 일정 조회
@@ -36,14 +43,24 @@ public class ScheduleController {
     @PutMapping("/schedules/{id}")
     public ResponseEntity<UpdateScheduleResponse> updateSchedule(
             @PathVariable Long id,
-            @RequestBody UpdateScheduleRequest updateScheduleRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateSchedule(id, updateScheduleRequest));
+            @Valid @RequestBody UpdateScheduleRequest updateScheduleRequest,
+            HttpSession httpSession) {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
+        if(sessionUser==null){
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateSchedule(id, updateScheduleRequest, sessionUser.getId()));
     }
 
     //일정 삭제
     @DeleteMapping("/schedules/{id}")
-    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
-        scheduleService.deleteSchedule(id);
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, HttpSession httpSession) {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
+
+        if(sessionUser==null){
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        scheduleService.deleteSchedule(id, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
