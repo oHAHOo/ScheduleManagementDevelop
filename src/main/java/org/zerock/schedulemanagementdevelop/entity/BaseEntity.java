@@ -16,11 +16,9 @@ public abstract class BaseEntity {
     // 엔티티 생성 시 자동으로 현재 시간이 저장됨
     @CreatedDate
     @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     // 엔티티 수정 시 자동으로 현재 시간이 업데이트됨
     @LastModifiedDate
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
 }
