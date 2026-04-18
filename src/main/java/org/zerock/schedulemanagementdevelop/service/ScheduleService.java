@@ -1,22 +1,28 @@
 package org.zerock.schedulemanagementdevelop.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zerock.schedulemanagementdevelop.dto.*;
+import org.zerock.schedulemanagementdevelop.dto.ScheduleDto.*;
 import org.zerock.schedulemanagementdevelop.entity.Schedule;
+import org.zerock.schedulemanagementdevelop.entity.User;
 import org.zerock.schedulemanagementdevelop.repository.ScheduleRepository;
+import org.zerock.schedulemanagementdevelop.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ScheduleService {
-    private ScheduleRepository  scheduleRepository;
+    private final ScheduleRepository  scheduleRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public CreateScheduleResponse saveSchedule(CreateScheduleRequest createScheduleRequest){
+        User user = userRepository.findById(createScheduleRequest.getUserId()).orElseThrow( () -> new IllegalStateException("User not found"));
         Schedule schedule = new Schedule(
-                createScheduleRequest.getUserName(),
+                user,
                 createScheduleRequest.getTitle(),
                 createScheduleRequest.getContent()
         );
@@ -24,7 +30,8 @@ public class ScheduleService {
 
         return new CreateScheduleResponse(
                 savedSchedule.getId(),
-                savedSchedule.getUserName(),
+                savedSchedule.getUser().getId(),
+                savedSchedule.getUser().getUsername(),
                 savedSchedule.getTitle(),
                 savedSchedule.getContent(),
                 savedSchedule.getCreatedAt(),
@@ -32,14 +39,15 @@ public class ScheduleService {
         );
     }
 
-    @Transactional
-    public GetOneScheduleResponse findById(Long id) {
+    @Transactional(readOnly = true)
+    public GetScheduleResponse findById(Long id) {
         // ID에 해당하는 일정 조회, 없으면 예외 발생
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalStateException("Schedule not found"));
 
-        return new GetOneScheduleResponse(
+        return new GetScheduleResponse(
                 schedule.getId(),
-                schedule.getUserName(),
+                schedule.getUser().getId(),
+                schedule.getUser().getUsername(),
                 schedule.getTitle(),
                 schedule.getContent(),
                 schedule.getCreatedAt(),
@@ -48,20 +56,21 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetAllScheduleResponse> findAll(String userName) {
+    public List<GetScheduleResponse> findAll(Long userId) {
         List<Schedule> schedules;
-        if(userName == null){// userName이 없으면 전체 조회
-            schedules = scheduleRepository.findAllByOrderByModifiedAtDesc();
-        }
-        else{// userName이 있으면 해당 작성자의 일정만 조회
-            schedules = scheduleRepository.findByUserNameOrderByModifiedAtDesc(userName);
+
+        if (userId == null) {
+            schedules = scheduleRepository.findAll();
+        } else {
+            schedules = scheduleRepository.findByUser_Id(userId);
         }
 
-        List<GetAllScheduleResponse> dtos = new ArrayList<>();
-        for(Schedule schedule : schedules){
-            GetAllScheduleResponse dto = new GetAllScheduleResponse(
+        List<GetScheduleResponse> dtos = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            GetScheduleResponse dto = new GetScheduleResponse(
                     schedule.getId(),
-                    schedule.getUserName(),
+                    schedule.getUser().getId(),
+                    schedule.getUser().getUsername(),
                     schedule.getTitle(),
                     schedule.getContent(),
                     schedule.getCreatedAt(),
@@ -74,7 +83,7 @@ public class ScheduleService {
 
     @Transactional
     public UpdateScheduleResponse updateSchedule(Long id, UpdateScheduleRequest updateScheduleRequest) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalStateException("schedule not found"));
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalStateException("Schedule not found"));
         schedule.updateSchedule(updateScheduleRequest.getTitle(),updateScheduleRequest.getContent());
         return new UpdateScheduleResponse(schedule.getId(), schedule.getTitle(), schedule.getContent(), schedule.getModifiedAt());
         }
@@ -82,8 +91,9 @@ public class ScheduleService {
     @Transactional
     public void deleteSchedule(Long id) {
         //일정이 없으면 예외
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalStateException("schedule not found"));
-
+        if (!scheduleRepository.existsById(id)) {
+            throw new IllegalStateException("Schedule not found");
+        }
         scheduleRepository.deleteById(id);
     }
 }

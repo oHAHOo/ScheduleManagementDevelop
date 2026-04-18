@@ -35,9 +35,8 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<GetUserResponse> findAll() {
-        List<User> users;
+        List<User> users = userRepository.findAll();
         List<GetUserResponse> dtos = new ArrayList<>();
-        users = userRepository.findAll();
         for (User user : users) {
             GetUserResponse dto = new GetUserResponse(
                     user.getId(),
@@ -54,12 +53,16 @@ public class UserService {
     @Transactional
     public UpdateUserResponse updateUser(Long id, UpdateUserRequest updateUserRequest) {
         User user = userRepository.findById(id).orElseThrow(()-> new IllegalStateException("User not found"));
-        user.updateUser(updateUserRequest.getUsername(), updateUserRequest.getUsername());
+        user.updateUser(updateUserRequest.getUsername(), updateUserRequest.getEmail());
         return  new UpdateUserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getModifiedAt());
     }
 
     @Transactional
     public void deleteById(Long id) {
+        boolean existence = userRepository.existsById(id);
+        if (!existence) {
+            throw new IllegalStateException("User not found");
+        }
         userRepository.deleteById(id);
     }
 

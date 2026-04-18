@@ -12,7 +12,7 @@ public class UpdateScheduleResponse {
     // 수정된 일정 제목
     private final String title;
 
-    // 수정된 작성자 이름
+    // 수정된 일정 내용
     private final String content;
 
     // 수정된 시간 (마지막 수정 시각)

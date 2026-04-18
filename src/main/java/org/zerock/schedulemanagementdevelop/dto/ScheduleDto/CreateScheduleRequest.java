@@ -4,17 +4,15 @@ import lombok.Getter;
 
 @Getter
 public class CreateScheduleRequest {
+
+    private Long userId;
     // 일정 제목
     private String title;
-
     // 일정 내용
     private String content;
 
-    // 작성자 이름
-    private String userName;
-
-    public CreateScheduleRequest(String userName, String title, String content) {
-        this.userName = userName;
+    public CreateScheduleRequest(Long userId, String title, String content) {
+        this.userId = userId;
         this.title = title;
         this.content = content;
 

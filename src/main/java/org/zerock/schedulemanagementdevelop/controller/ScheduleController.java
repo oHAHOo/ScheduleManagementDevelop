@@ -4,32 +4,32 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.schedulemanagementdevelop.dto.*;
 import org.zerock.schedulemanagementdevelop.service.ScheduleService;
+import org.zerock.schedulemanagementdevelop.dto.ScheduleDto.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class ScheduleController {
-    private ScheduleService scheduleService;
+    private final ScheduleService scheduleService;
 
     //일정 등록
     @PostMapping("/schedules")
-    public ResponseEntity<CreateScheduleResponse> createSchedule(@RequestBody CreateScheduleRequest createScheduleRequest) {
+    public ResponseEntity<CreateScheduleResponse> saveSchedule(@RequestBody CreateScheduleRequest createScheduleRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.saveSchedule(createScheduleRequest));
     }
 
     //단일 일정 조회
     @GetMapping("/schedules/{id}")
-    public ResponseEntity<GetOneScheduleResponse> getOneSchedule(@PathVariable Long id) {
+    public ResponseEntity<GetScheduleResponse> getOneSchedule(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findById(id));
     }
 
     //전체 일정 조회
     @GetMapping("/schedules")
-    public ResponseEntity<List<GetAllScheduleResponse>> getAllSchedules(@RequestParam(required = false) String userName) {
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(userName));
+    public ResponseEntity<List<GetScheduleResponse>> getAllSchedules(@RequestParam(required = false) Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(userId));
     }
 
     //일정 수정

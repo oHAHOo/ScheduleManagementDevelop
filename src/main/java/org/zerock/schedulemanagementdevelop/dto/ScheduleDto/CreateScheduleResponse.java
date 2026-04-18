@@ -8,6 +8,8 @@ public class CreateScheduleResponse {
     // 일정 고유 ID
     private final Long id;
 
+    private final Long userId;
+
     // 일정 제목
     private final String title;
 
@@ -23,8 +25,11 @@ public class CreateScheduleResponse {
     // 일정 수정 시간
     private final LocalDateTime modifiedAt;
 
-    public CreateScheduleResponse(Long id, String userName, String title, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public CreateScheduleResponse(Long id, Long userId, String userName,
+                                  String title, String content,
+                                  LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
+        this.userId = userId;
         this.userName = userName;
         this.title = title;
         this.content = content;
