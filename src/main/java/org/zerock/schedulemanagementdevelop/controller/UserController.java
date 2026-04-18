@@ -43,13 +43,23 @@ public class UserController {
     @PutMapping("/users/{id}")
     public ResponseEntity<UpdateUserResponse> updateUser(
             @PathVariable Long id,
-            @RequestBody UpdateUserRequest updateUserRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(id, updateUserRequest));
+            @Valid @RequestBody UpdateUserRequest updateUserRequest,
+            HttpSession httpSession) {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
+
+        if(sessionUser==null){
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(id, updateUserRequest, sessionUser.getId()));
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
-        userService.deleteById(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id, HttpSession httpSession) {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
+        if(sessionUser==null){
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        userService.deleteById(id, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

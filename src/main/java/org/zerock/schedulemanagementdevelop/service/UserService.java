@@ -1,5 +1,6 @@
 package org.zerock.schedulemanagementdevelop.service;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,20 +52,36 @@ public class UserService {
     }
 
     @Transactional
-    public UpdateUserResponse updateUser(Long id, UpdateUserRequest updateUserRequest) {
+    public UpdateUserResponse updateUser(Long id, UpdateUserRequest updateUserRequest, Long userId) {
         User user = userRepository.findById(id).orElseThrow(()-> new IllegalStateException("User not found"));
+        if(!user.getId().equals(userId)){
+            throw new IllegalStateException("본인만 수정할 수 있습니다.");
+        }
         user.updateUser(updateUserRequest.getUsername(), updateUserRequest.getEmail());
         return  new UpdateUserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getModifiedAt());
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        boolean existence = userRepository.existsById(id);
-        if (!existence) {
-            throw new IllegalStateException("User not found");
+    public void deleteById(Long id, Long userId) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+
+        if (!user.getId().equals(userId)) {
+            throw new IllegalStateException("본인만 삭제할 수 있습니다.");
         }
+
         userRepository.deleteById(id);
     }
 
 
+    @Transactional(readOnly = true)
+    public SessionUser login(@Valid LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
+                ()-> new IllegalStateException("User not found"));
+
+        if(!user.getPassword().equals(loginRequest.getPassword())) {
+            throw new IllegalStateException("Wrong password");
+        }
+        return new SessionUser(user.getId(),user.getUsername());
+    }
 }
