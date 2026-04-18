@@ -1,5 +1,6 @@
 package org.zerock.schedulemanagementdevelop.controller;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,15 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<CreateUserResponse> signup(@Valid @RequestBody CreateUserRequest createUserRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(createUserRequest));
+    }
+
+    //로그인 (분리해야할수도)
+    @PostMapping("/login")
+    public ResponseEntity<Void> login(@Valid @RequestBody LoginRequest loginRequest, HttpSession httpSession) {
+        SessionUser sessionUser= userService.login(loginRequest);
+        httpSession.setAttribute("loginUser", sessionUser);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/users/{id}")
