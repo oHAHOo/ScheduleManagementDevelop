@@ -23,7 +23,7 @@ public class ScheduleService {
 
     @Transactional
     public CreateScheduleResponse saveSchedule(CreateScheduleRequest createScheduleRequest, Long userId){
-        User user = userRepository.findById(userId).orElseThrow( () -> new UserNotFoundException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow( () -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         Schedule schedule = new Schedule(
                 user,
                 createScheduleRequest.getTitle(),
@@ -45,7 +45,7 @@ public class ScheduleService {
     @Transactional(readOnly = true)
     public GetScheduleResponse findById(Long id) {
         // ID에 해당하는 일정 조회, 없으면 예외 발생
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new SchduleNotFoundException("Schedule not found"));
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new SchduleNotFoundException("일정을 찾을 수 없습니다."));
 
         return new GetScheduleResponse(
                 schedule.getId(),
@@ -86,7 +86,7 @@ public class ScheduleService {
 
     @Transactional
     public UpdateScheduleResponse updateSchedule(Long scheduleId, UpdateScheduleRequest updateScheduleRequest, Long userId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new SchduleNotFoundException("Schedule not found"));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new SchduleNotFoundException("일정을 찾을 수 없습니다."));
 
         if(!schedule.getUser().getId().equals(userId)){
             throw new AccessDeniedException("수정 권한이 없습니다.");

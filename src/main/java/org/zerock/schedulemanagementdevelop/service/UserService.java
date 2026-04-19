@@ -37,7 +37,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public GetUserResponse findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         return new GetUserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt());
     }
 
@@ -60,7 +60,7 @@ public class UserService {
 
     @Transactional
     public UpdateUserResponse updateUser(Long id, UpdateUserRequest updateUserRequest, Long userId) {
-        User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         if(!user.getId().equals(userId)){
             throw new AccessDeniedException("본인만 수정할 수 있습니다.");
         }
@@ -71,7 +71,7 @@ public class UserService {
     @Transactional
     public void deleteById(Long id, Long userId) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
 
         if (!user.getId().equals(userId)) {
             throw new AccessDeniedException("본인만 삭제할 수 있습니다.");
@@ -84,10 +84,10 @@ public class UserService {
     @Transactional(readOnly = true)
     public SessionUser login(@Valid LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
-                ()-> new UserNotFoundException("User not found"));
+                ()-> new UserNotFoundException("사용자를 찾을 수 없습니다."));
 
         if(!user.getPassword().equals(loginRequest.getPassword())) {
-            throw new InvalidPasswordException("Wrong password");
+            throw new InvalidPasswordException("비밀번호가 일치하지 않습니다");
         }
         return new SessionUser(user.getId(),user.getUsername());
     }
