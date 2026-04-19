@@ -1,20 +1,22 @@
 package org.zerock.schedulemanagementdevelop.dto.ScheduleDto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
 public class CreateScheduleRequest {
-
-    private Long userId;
+    //userId 제거
     // 일정 제목
+    @NotBlank(message = "제목은 필수입니다.")
+    @Size(max = 10, message = "제목은 10글자 이내로 입력하세요.")
     private String title;
     // 일정 내용
+    @NotBlank(message = "내용은 필수입니다.")
     private String content;
 
-    public CreateScheduleRequest(Long userId, String title, String content) {
-        this.userId = userId;
+    public CreateScheduleRequest(String title, String content) {
         this.title = title;
         this.content = content;
-
     }
 }
