@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.schedulemanagementdevelop.config.UnauthorizedException;
+import org.zerock.schedulemanagementdevelop.exception.UnauthorizedException;
 import org.zerock.schedulemanagementdevelop.dto.UserDto.SessionUser;
 import org.zerock.schedulemanagementdevelop.service.ScheduleService;
 import org.zerock.schedulemanagementdevelop.dto.ScheduleDto.*;
