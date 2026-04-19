@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.schedulemanagementdevelop.config.UnauthorizedException;
 import org.zerock.schedulemanagementdevelop.service.UserService;
 import org.zerock.schedulemanagementdevelop.dto.UserDto.*;
 
@@ -48,7 +49,7 @@ public class UserController {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
 
         if(sessionUser==null){
-            throw new IllegalStateException("로그인이 필요합니다.");
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(id, updateUserRequest, sessionUser.getId()));
     }
@@ -57,7 +58,7 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
         if(sessionUser==null){
-            throw new IllegalStateException("로그인이 필요합니다.");
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         userService.deleteById(id, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
