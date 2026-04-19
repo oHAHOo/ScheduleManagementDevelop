@@ -1,4 +1,4 @@
-package org.zerock.schedulemanagementdevelop.config;
+package org.zerock.schedulemanagementdevelop.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
