@@ -19,6 +19,9 @@ public class UserService {
     @Transactional
     public CreateUserResponse saveUser(CreateUserRequest createUserRequest) {
         User user = new User(createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword());
+        if(userRepository.existsByEmail(createUserRequest.getEmail())) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        }
         User savedUser = userRepository.save(user);
         return new CreateUserResponse(
                 savedUser.getId(),
