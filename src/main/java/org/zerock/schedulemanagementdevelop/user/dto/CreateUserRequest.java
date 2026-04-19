@@ -1,4 +1,4 @@
-package org.zerock.schedulemanagementdevelop.dto.UserDto;
+package org.zerock.schedulemanagementdevelop.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

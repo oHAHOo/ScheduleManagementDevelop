@@ -1,4 +1,4 @@
-package org.zerock.schedulemanagementdevelop.entity;
+package org.zerock.schedulemanagementdevelop;
 
 import jakarta.persistence.*;
 import lombok.Getter;

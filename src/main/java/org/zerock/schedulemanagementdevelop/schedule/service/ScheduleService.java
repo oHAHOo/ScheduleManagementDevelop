@@ -1,4 +1,4 @@
-package org.zerock.schedulemanagementdevelop.service;
+package org.zerock.schedulemanagementdevelop.schedule.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -6,11 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zerock.schedulemanagementdevelop.exception.SchduleNotFoundException;
 import org.zerock.schedulemanagementdevelop.exception.AccessDeniedException;
 import org.zerock.schedulemanagementdevelop.exception.UserNotFoundException;
-import org.zerock.schedulemanagementdevelop.dto.ScheduleDto.*;
-import org.zerock.schedulemanagementdevelop.entity.Schedule;
-import org.zerock.schedulemanagementdevelop.entity.User;
-import org.zerock.schedulemanagementdevelop.repository.ScheduleRepository;
-import org.zerock.schedulemanagementdevelop.repository.UserRepository;
+import org.zerock.schedulemanagementdevelop.schedule.dto.*;
+import org.zerock.schedulemanagementdevelop.schedule.entity.Schedule;
+import org.zerock.schedulemanagementdevelop.user.entity.User;
+import org.zerock.schedulemanagementdevelop.schedule.repository.ScheduleRepository;
+import org.zerock.schedulemanagementdevelop.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;

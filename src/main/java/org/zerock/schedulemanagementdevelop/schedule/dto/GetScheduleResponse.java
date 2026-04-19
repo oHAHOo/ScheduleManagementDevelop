@@ -1,10 +1,11 @@
-package org.zerock.schedulemanagementdevelop.dto.ScheduleDto;
+package org.zerock.schedulemanagementdevelop.schedule.dto;
 
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+
 @Getter
-public class CreateScheduleResponse {
+public class GetScheduleResponse {
     // 일정 고유 ID
     private final Long id;
 
@@ -25,9 +26,10 @@ public class CreateScheduleResponse {
     // 일정 수정 시간
     private final LocalDateTime modifiedAt;
 
-    public CreateScheduleResponse(Long id, Long userId, String userName,
-                                  String title, String content,
-                                  LocalDateTime createdAt, LocalDateTime modifiedAt) {
+
+    public GetScheduleResponse(Long id, Long userId, String userName,
+                               String title, String content,
+                               LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.userId = userId;
         this.userName = userName;

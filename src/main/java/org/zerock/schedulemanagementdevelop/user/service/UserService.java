@@ -1,4 +1,4 @@
-package org.zerock.schedulemanagementdevelop.service;
+package org.zerock.schedulemanagementdevelop.user.service;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +9,9 @@ import org.zerock.schedulemanagementdevelop.exception.DuplicateEmailException;
 import org.zerock.schedulemanagementdevelop.exception.InvalidPasswordException;
 import org.zerock.schedulemanagementdevelop.exception.AccessDeniedException;
 import org.zerock.schedulemanagementdevelop.exception.UserNotFoundException;
-import org.zerock.schedulemanagementdevelop.dto.UserDto.*;
-import org.zerock.schedulemanagementdevelop.entity.User;
-import org.zerock.schedulemanagementdevelop.repository.UserRepository;
+import org.zerock.schedulemanagementdevelop.user.dto.*;
+import org.zerock.schedulemanagementdevelop.user.entity.User;
+import org.zerock.schedulemanagementdevelop.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,6 @@ public class UserService {
 
         userRepository.deleteById(id);
     }
-
 
     @Transactional(readOnly = true)
     public SessionUser login(@Valid LoginRequest loginRequest) {

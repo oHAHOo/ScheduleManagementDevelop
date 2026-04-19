@@ -1,4 +1,4 @@
-package org.zerock.schedulemanagementdevelop.dto.ScheduleDto;
+package org.zerock.schedulemanagementdevelop.schedule.dto;
 
 import lombok.Getter;
 

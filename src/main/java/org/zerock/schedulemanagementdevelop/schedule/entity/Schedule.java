@@ -1,9 +1,11 @@
-package org.zerock.schedulemanagementdevelop.entity;
+package org.zerock.schedulemanagementdevelop.schedule.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.zerock.schedulemanagementdevelop.BaseEntity;
+import org.zerock.schedulemanagementdevelop.user.entity.User;
 
 @Getter
 @Entity

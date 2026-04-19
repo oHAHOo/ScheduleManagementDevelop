@@ -1,4 +1,4 @@
-package org.zerock.schedulemanagementdevelop.controller;
+package org.zerock.schedulemanagementdevelop.user.controller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.schedulemanagementdevelop.exception.UnauthorizedException;
-import org.zerock.schedulemanagementdevelop.service.UserService;
-import org.zerock.schedulemanagementdevelop.dto.UserDto.*;
+import org.zerock.schedulemanagementdevelop.user.dto.*;
+import org.zerock.schedulemanagementdevelop.user.service.UserService;
 
 import java.util.List;
 
