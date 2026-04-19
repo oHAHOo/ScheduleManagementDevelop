@@ -4,10 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zerock.schedulemanagementdevelop.config.DuplicateEmailException;
-import org.zerock.schedulemanagementdevelop.config.InvalidPasswordException;
-import org.zerock.schedulemanagementdevelop.config.AccessDeniedException;
-import org.zerock.schedulemanagementdevelop.config.UserNotFoundException;
+import org.zerock.schedulemanagementdevelop.config.PasswordEncoder;
+import org.zerock.schedulemanagementdevelop.exception.DuplicateEmailException;
+import org.zerock.schedulemanagementdevelop.exception.InvalidPasswordException;
+import org.zerock.schedulemanagementdevelop.exception.AccessDeniedException;
+import org.zerock.schedulemanagementdevelop.exception.UserNotFoundException;
 import org.zerock.schedulemanagementdevelop.dto.UserDto.*;
 import org.zerock.schedulemanagementdevelop.entity.User;
 import org.zerock.schedulemanagementdevelop.repository.UserRepository;
@@ -19,13 +20,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public CreateUserResponse saveUser(CreateUserRequest createUserRequest) {
-        User user = new User(createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword());
         if(userRepository.existsByEmail(createUserRequest.getEmail())) {
             throw new DuplicateEmailException("이미 존재하는 이메일입니다.");
         }
+        String encodedPassword =  passwordEncoder.encode(createUserRequest.getPassword());
+        User user = new User(createUserRequest.getUsername(), createUserRequest.getEmail(), encodedPassword);
+
         User savedUser = userRepository.save(user);
         return new CreateUserResponse(
                 savedUser.getId(),
@@ -86,7 +90,7 @@ public class UserService {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
                 ()-> new UserNotFoundException("사용자를 찾을 수 없습니다."));
 
-        if(!user.getPassword().equals(loginRequest.getPassword())) {
+        if(!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다");
         }
         return new SessionUser(user.getId(),user.getUsername());
