@@ -8,7 +8,7 @@ import org.zerock.schedulemanagementdevelop.BaseEntity;
 
 @Entity
 @Getter
-@Table (name = "users")
+@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
@@ -31,7 +31,7 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public void updateUser(String  username, String email) {
+    public void updateUser(String username, String email) {
         this.username = username;
         this.email = email;
     }

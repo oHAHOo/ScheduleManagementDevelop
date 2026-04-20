@@ -5,24 +5,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zerock.schedulemanagementdevelop.exception.SchduleNotFoundException;
 import org.zerock.schedulemanagementdevelop.exception.AccessDeniedException;
+import org.zerock.schedulemanagementdevelop.exception.SchduleNotFoundException;
 import org.zerock.schedulemanagementdevelop.exception.UserNotFoundException;
 import org.zerock.schedulemanagementdevelop.schedule.dto.*;
 import org.zerock.schedulemanagementdevelop.schedule.entity.Schedule;
-import org.zerock.schedulemanagementdevelop.user.entity.User;
 import org.zerock.schedulemanagementdevelop.schedule.repository.ScheduleRepository;
+import org.zerock.schedulemanagementdevelop.user.entity.User;
 import org.zerock.schedulemanagementdevelop.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
 public class ScheduleService {
-    private final ScheduleRepository  scheduleRepository;
+    private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
     @Transactional
-    public CreateScheduleResponse saveSchedule(CreateScheduleRequest createScheduleRequest, Long userId){
-        User user = userRepository.findById(userId).orElseThrow( () -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
+    public CreateScheduleResponse saveSchedule(CreateScheduleRequest createScheduleRequest, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         Schedule schedule = new Schedule(
                 user,
                 createScheduleRequest.getTitle(),
@@ -57,7 +57,7 @@ public class ScheduleService {
         );
     }
 
-//    @Transactional(readOnly = true)
+    //    @Transactional(readOnly = true)
 //    public List<GetScheduleResponse> findAll(Long userId) {
 //        List<Schedule> schedules;
 //
@@ -91,18 +91,18 @@ public class ScheduleService {
     public UpdateScheduleResponse updateSchedule(Long scheduleId, UpdateScheduleRequest updateScheduleRequest, Long userId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new SchduleNotFoundException("일정을 찾을 수 없습니다."));
 
-        if(!schedule.getUser().getId().equals(userId)){
+        if (!schedule.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("수정 권한이 없습니다.");
         }
-        schedule.updateSchedule(updateScheduleRequest.getTitle(),updateScheduleRequest.getContent());
+        schedule.updateSchedule(updateScheduleRequest.getTitle(), updateScheduleRequest.getContent());
         return new UpdateScheduleResponse(schedule.getId(), schedule.getTitle(), schedule.getContent(), schedule.getModifiedAt());
-        }
+    }
 
     @Transactional
     public void deleteSchedule(Long scheduleId, Long userId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new SchduleNotFoundException("일정을 찾을 수 없습니다."));
         //일정이 없으면 예외
-        if(!schedule.getUser().getId().equals(userId)){
+        if (!schedule.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("삭제 권한이 없습니다.");
         }
         scheduleRepository.deleteById(scheduleId);

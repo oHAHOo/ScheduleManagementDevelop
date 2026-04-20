@@ -22,22 +22,21 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(createUserRequest));
     }
 
-    //로그인 (분리해야할수도)
     @PostMapping("/login")
     public ResponseEntity<Void> login(@Valid @RequestBody LoginRequest loginRequest, HttpSession httpSession) {
-        SessionUser sessionUser= userService.login(loginRequest);
+        SessionUser sessionUser = userService.login(loginRequest);
         httpSession.setAttribute("loginUser", sessionUser);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<GetUserResponse> getOneUser(@PathVariable Long id){
+    public ResponseEntity<GetUserResponse> getOneUser(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findById(id));
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<GetUserResponse>> getAllUser(){
+    public ResponseEntity<List<GetUserResponse>> getAllUser() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
 
@@ -48,7 +47,7 @@ public class UserController {
             HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
 
-        if(sessionUser==null){
+        if (sessionUser == null) {
             throw new UnauthorizedException("로그인이 필요합니다.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(id, updateUserRequest, sessionUser.getId()));
@@ -57,7 +56,7 @@ public class UserController {
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
-        if(sessionUser==null){
+        if (sessionUser == null) {
             throw new UnauthorizedException("로그인이 필요합니다.");
         }
         userService.deleteById(id, sessionUser.getId());

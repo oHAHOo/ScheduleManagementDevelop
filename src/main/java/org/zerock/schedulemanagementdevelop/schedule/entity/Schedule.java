@@ -44,7 +44,7 @@ public class Schedule extends BaseEntity {
     }
 
     //일정 수정 메서드
-    public void updateSchedule (String title, String content) {
+    public void updateSchedule(String title, String content) {
         this.title = title;
         this.content = content;
     }
