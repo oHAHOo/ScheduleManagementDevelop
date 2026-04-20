@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.zerock.schedulemanagementdevelop.schedule.dto.SchedulePageResponse;
 import org.zerock.schedulemanagementdevelop.schedule.entity.Schedule;
 
-import java.util.List;
-
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
     @Query("""
