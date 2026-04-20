@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/schedules/{id}")
+@RequestMapping("/schedules/{scheduleId}")
 public class CommentController {
     private final CommentService commentService;
 
