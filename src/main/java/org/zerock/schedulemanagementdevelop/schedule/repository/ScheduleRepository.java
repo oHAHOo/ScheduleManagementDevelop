@@ -23,6 +23,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
     FROM Schedule s
     JOIN s.user u
     LEFT JOIN s.comments c
+    WHERE (:userId IS NULL OR u.id = :userId)
     GROUP BY s.id, u.username
 """)
     Page<SchedulePageResponse> findAllSchedules(Long userId, Pageable pageable);
