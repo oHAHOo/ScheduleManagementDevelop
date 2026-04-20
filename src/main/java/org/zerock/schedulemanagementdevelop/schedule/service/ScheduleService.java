@@ -1,6 +1,10 @@
 package org.zerock.schedulemanagementdevelop.schedule.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.schedulemanagementdevelop.exception.SchduleNotFoundException;
@@ -58,30 +62,34 @@ public class ScheduleService {
         );
     }
 
+//    @Transactional(readOnly = true)
+//    public List<GetScheduleResponse> findAll(Long userId) {
+//        List<Schedule> schedules;
+//
+//        if (userId == null) {
+//            schedules = scheduleRepository.findAll();
+//        } else {
+//            schedules = scheduleRepository.findByUser_Id(userId);
+//        }
+//
+//        List<GetScheduleResponse> dtos = new ArrayList<>();
+//        for (Schedule schedule : schedules) {
+//            GetScheduleResponse dto = new GetScheduleResponse(
+//                    schedule.getId(),
+//                    schedule.getUser().getId(),
+//                    schedule.getUser().getUsername(),
+//                    schedule.getTitle(),
+//                    schedule.getContent(),
+//                    schedule.getCreatedAt(),
+//                    schedule.getModifiedAt()
+//            );
+//            dtos.add(dto);
+//        }
+//        return dtos;
+//    }
     @Transactional(readOnly = true)
-    public List<GetScheduleResponse> findAll(Long userId) {
-        List<Schedule> schedules;
-
-        if (userId == null) {
-            schedules = scheduleRepository.findAll();
-        } else {
-            schedules = scheduleRepository.findByUser_Id(userId);
-        }
-
-        List<GetScheduleResponse> dtos = new ArrayList<>();
-        for (Schedule schedule : schedules) {
-            GetScheduleResponse dto = new GetScheduleResponse(
-                    schedule.getId(),
-                    schedule.getUser().getId(),
-                    schedule.getUser().getUsername(),
-                    schedule.getTitle(),
-                    schedule.getContent(),
-                    schedule.getCreatedAt(),
-                    schedule.getModifiedAt()
-            );
-            dtos.add(dto);
-        }
-        return dtos;
+    public Page<SchedulePageResponse> findAll(Long userId, Pageable pageable) {
+        return scheduleRepository.findAllSchedules(userId, pageable);
     }
 
     @Transactional

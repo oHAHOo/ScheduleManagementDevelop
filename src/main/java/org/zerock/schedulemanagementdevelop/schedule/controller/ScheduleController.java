@@ -3,6 +3,10 @@ package org.zerock.schedulemanagementdevelop.schedule.controller;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +24,7 @@ public class ScheduleController {
 
     //일정 등록
     @PostMapping("/schedules")
-    public ResponseEntity<CreateScheduleResponse> saveSchedule(@Valid @RequestBody CreateScheduleRequest createScheduleRequest, HttpSession httpSession) {
+    public ResponseEntity<CreateScheduleResponse> saveSchedule (@Valid @RequestBody CreateScheduleRequest createScheduleRequest, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
         if(sessionUser==null){
             throw new UnauthorizedException("로그인이 필요합니다");
@@ -30,19 +34,23 @@ public class ScheduleController {
 
     //단일 일정 조회
     @GetMapping("/schedules/{id}")
-    public ResponseEntity<GetScheduleResponse> getOneSchedule(@PathVariable Long id) {
+    public ResponseEntity<GetScheduleResponse> getOneSchedule (@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findById(id));
     }
 
     //전체 일정 조회
     @GetMapping("/schedules")
-    public ResponseEntity<List<GetScheduleResponse>> getAllSchedules(@RequestParam(required = false) Long userId) {
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(userId));
+    public ResponseEntity<Page<SchedulePageResponse>> getAllSchedules (
+            @RequestParam(required = false) Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "modifiedAt"));
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(userId, pageable));
     }
 
     //일정 수정
     @PutMapping("/schedules/{id}")
-    public ResponseEntity<UpdateScheduleResponse> updateSchedule(
+    public ResponseEntity<UpdateScheduleResponse> updateSchedule (
             @PathVariable Long id,
             @Valid @RequestBody UpdateScheduleRequest updateScheduleRequest,
             HttpSession httpSession) {
@@ -55,7 +63,7 @@ public class ScheduleController {
 
     //일정 삭제
     @DeleteMapping("/schedules/{id}")
-    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, HttpSession httpSession) {
+    public ResponseEntity<Void> deleteSchedule (@PathVariable Long id, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
 
         if(sessionUser==null){
@@ -64,4 +72,5 @@ public class ScheduleController {
         scheduleService.deleteSchedule(id, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 }

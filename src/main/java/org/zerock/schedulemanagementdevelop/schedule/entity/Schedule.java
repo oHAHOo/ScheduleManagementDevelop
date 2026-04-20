@@ -5,7 +5,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.zerock.schedulemanagementdevelop.BaseEntity;
+import org.zerock.schedulemanagementdevelop.comment.entity.Comment;
 import org.zerock.schedulemanagementdevelop.user.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -29,6 +33,9 @@ public class Schedule extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "schedule")
+    private List<Comment> comments = new ArrayList<>();
 
     public Schedule(User user, String title, String content) {
         this.user = user;
