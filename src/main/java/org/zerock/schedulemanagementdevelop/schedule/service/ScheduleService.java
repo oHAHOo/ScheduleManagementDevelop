@@ -2,9 +2,7 @@ package org.zerock.schedulemanagementdevelop.schedule.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.schedulemanagementdevelop.exception.SchduleNotFoundException;
@@ -15,9 +13,6 @@ import org.zerock.schedulemanagementdevelop.schedule.entity.Schedule;
 import org.zerock.schedulemanagementdevelop.user.entity.User;
 import org.zerock.schedulemanagementdevelop.schedule.repository.ScheduleRepository;
 import org.zerock.schedulemanagementdevelop.user.repository.UserRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

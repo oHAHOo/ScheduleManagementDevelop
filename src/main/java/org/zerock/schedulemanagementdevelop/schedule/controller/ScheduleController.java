@@ -15,8 +15,6 @@ import org.zerock.schedulemanagementdevelop.user.dto.SessionUser;
 import org.zerock.schedulemanagementdevelop.schedule.dto.*;
 import org.zerock.schedulemanagementdevelop.schedule.service.ScheduleService;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 public class ScheduleController {

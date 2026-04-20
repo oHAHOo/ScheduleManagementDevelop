@@ -12,8 +12,6 @@ import java.util.List;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
-    List<Schedule> findByUser_Id(Long userId);
-
     @Query("""
     SELECT new org.zerock.schedulemanagementdevelop.schedule.dto.SchedulePageResponse(
         s.id,
