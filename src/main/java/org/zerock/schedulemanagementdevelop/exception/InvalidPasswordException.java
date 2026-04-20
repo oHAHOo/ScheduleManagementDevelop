@@ -4,6 +4,6 @@ import org.springframework.http.HttpStatus;
 
 public class InvalidPasswordException extends ServiceException {
     public InvalidPasswordException(String message) {
-        super(HttpStatus.FORBIDDEN, message); //401
+        super(HttpStatus.UNAUTHORIZED, message); //401
     }
 }
