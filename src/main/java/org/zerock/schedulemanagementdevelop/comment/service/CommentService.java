@@ -41,7 +41,7 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<GetCommentResponse> findAll(Long scheduleId) {
-         List<Comment> comments = commentRepository.findByAllScheduleId(scheduleId);
+         List<Comment> comments = commentRepository.findBySchedule_Id(scheduleId);
          List<GetCommentResponse> dtos = new ArrayList<>();
          for (Comment comment : comments) {
              GetCommentResponse dto = new GetCommentResponse(
