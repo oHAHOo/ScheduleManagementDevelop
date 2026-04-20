@@ -10,6 +10,8 @@ import org.zerock.schedulemanagementdevelop.schedule.entity.Schedule;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+
+    //일정 목록 페이징 조회
     @Query("""
                 SELECT new org.zerock.schedulemanagementdevelop.schedule.dto.SchedulePageResponse(
                     s.id,

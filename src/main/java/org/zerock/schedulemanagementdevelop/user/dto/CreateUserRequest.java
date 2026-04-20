@@ -18,7 +18,7 @@ public class CreateUserRequest {
 
     @NotBlank(message = "비밀번호는 필수입니다.")
     @Size(min = 8, message = "비밀번호는 8글자 이상이어야합니다.")
-    private String password; //비밀번호 추가
+    private String password;
 
     public CreateUserRequest(String username, String email, String password) {
         this.username = username;

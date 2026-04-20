@@ -9,6 +9,7 @@ public class CreateScheduleResponse {
     // 일정 고유 ID
     private final Long id;
 
+    //사용자 ID
     private final Long userId;
 
     // 일정 제목

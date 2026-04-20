@@ -9,7 +9,7 @@ import org.zerock.schedulemanagementdevelop.comment.dto.CreateCommentResponse;
 import org.zerock.schedulemanagementdevelop.comment.dto.GetCommentResponse;
 import org.zerock.schedulemanagementdevelop.comment.entity.Comment;
 import org.zerock.schedulemanagementdevelop.comment.repository.CommentRepository;
-import org.zerock.schedulemanagementdevelop.exception.SchduleNotFoundException;
+import org.zerock.schedulemanagementdevelop.exception.ScheduleNotFoundException;
 import org.zerock.schedulemanagementdevelop.exception.UnauthorizedException;
 import org.zerock.schedulemanagementdevelop.exception.UserNotFoundException;
 import org.zerock.schedulemanagementdevelop.schedule.entity.Schedule;
@@ -28,26 +28,42 @@ public class CommentService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
+    //댓글 생성
     @Transactional
     public CreateCommentResponse createComment(Long scheduleId, HttpSession httpSession, CreateCommentRequest createCommentRequest) {
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new SchduleNotFoundException("일정을 찾을 수 없습니다."));
+        //일정 조회
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleNotFoundException("일정을 찾을 수 없습니다."));
+
+        //로그인 유저 확인
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
         if (sessionUser == null) {
             throw new UnauthorizedException("로그인이 필요합니다.");
         }
+
+        //유저 조회
         User user = userRepository.findById(sessionUser.getId()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
+
+        //댓글 저장
         Comment comment = new Comment(createCommentRequest.getContent(), user, schedule);
         Comment savedComment = commentRepository.save(comment);
 
         return new CreateCommentResponse(savedComment.getId(), sessionUser.getId(), schedule.getId(), savedComment.getContent(), savedComment.getCreatedAt(), savedComment.getModifiedAt());
     }
 
+    //특정 일정의 댓글 전체 조회
     @Transactional(readOnly = true)
     public List<GetCommentResponse> findAll(Long scheduleId) {
+        //특정 일정의 댓글 목록 조회
         List<Comment> comments = commentRepository.findBySchedule_Id(scheduleId);
         List<GetCommentResponse> dtos = new ArrayList<>();
         for (Comment comment : comments) {
-            GetCommentResponse dto = new GetCommentResponse(comment.getId(), comment.getUser().getId(), comment.getSchedule().getId(), comment.getContent(), comment.getCreatedAt(), comment.getModifiedAt());
+            GetCommentResponse dto = new GetCommentResponse(
+                    comment.getId(),
+                    comment.getUser().getId(),
+                    comment.getSchedule().getId(),
+                    comment.getContent(),
+                    comment.getCreatedAt(),
+                    comment.getModifiedAt());
             dtos.add(dto);
         }
         return dtos;
