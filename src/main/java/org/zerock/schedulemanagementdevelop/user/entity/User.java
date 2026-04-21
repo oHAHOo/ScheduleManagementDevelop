@@ -8,7 +8,7 @@ import org.zerock.schedulemanagementdevelop.BaseEntity;
 
 @Entity
 @Getter
-@Table (name = "users")
+@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
@@ -16,12 +16,15 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //사용자 이름
     @Column(nullable = false)
     private String username;
 
+    //사용자 이메일
     @Column(nullable = false, unique = true)
     private String email;
 
+    //비밀번호
     @Column(nullable = false)
     private String password;
 
@@ -31,7 +34,7 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public void updateUser(String  username, String email) {
+    public void updateUser(String username, String email) {
         this.username = username;
         this.email = email;
     }

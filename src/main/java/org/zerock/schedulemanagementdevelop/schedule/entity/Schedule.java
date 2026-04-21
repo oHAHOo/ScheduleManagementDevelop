@@ -17,23 +17,25 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Schedule extends BaseEntity {
 
-    // 일정 고유 ID (PK)
+    // 일정 고유 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 일정 제목 (필수, 최대 30자)
+    // 일정 제목
     @Column(nullable = false, length = 30)
     private String title;
 
-    // 일정 내용 (필수, 최대 200자)
+    // 일정 내용
     @Column(nullable = false, length = 200)
     private String content;
 
+    // 일정 작성자 (N:1)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // 해당 일정의 댓글 목록 (1:N)
     @OneToMany(mappedBy = "schedule")
     private List<Comment> comments = new ArrayList<>();
 
@@ -44,7 +46,7 @@ public class Schedule extends BaseEntity {
     }
 
     //일정 수정 메서드
-    public void updateSchedule (String title, String content) {
+    public void updateSchedule(String title, String content) {
         this.title = title;
         this.content = content;
     }

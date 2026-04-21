@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class UpdateScheduleResponse {
+
     // 일정 고유 ID
     private final Long id;
 
@@ -17,7 +18,6 @@ public class UpdateScheduleResponse {
 
     // 수정된 시간 (마지막 수정 시각)
     private final LocalDateTime modifiedAt;
-
 
     public UpdateScheduleResponse(Long id, String title, String content, LocalDateTime modifiedAt) {
         this.id = id;

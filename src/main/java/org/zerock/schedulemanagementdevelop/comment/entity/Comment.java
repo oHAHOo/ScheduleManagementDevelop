@@ -15,18 +15,18 @@ public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    private Long id;
 
     @Column(nullable = false)
-    private String content;
+    private String content; //댓글 내용
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id",nullable = false)
-    private User user;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; //댓글 작성자 (N : 1)
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "schedule_id", nullable = false)
-    private Schedule schedule;
+    private Schedule schedule; //댓글이 속한 일정 (N : 1)
 
     public Comment(String content, User user, Schedule schedule) {
         this.content = content;

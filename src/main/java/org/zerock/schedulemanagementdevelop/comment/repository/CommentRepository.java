@@ -7,7 +7,8 @@ import org.zerock.schedulemanagementdevelop.comment.entity.Comment;
 import java.util.List;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment,Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findByAllScheduleId(Long scheduleId);
+    // 특정 일정(scheduleId)에 달린 댓글 목록 조회
+    List<Comment> findBySchedule_Id(Long scheduleId);
 }

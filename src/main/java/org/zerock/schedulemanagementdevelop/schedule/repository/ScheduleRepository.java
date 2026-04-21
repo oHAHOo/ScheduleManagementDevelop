@@ -9,21 +9,24 @@ import org.zerock.schedulemanagementdevelop.schedule.dto.SchedulePageResponse;
 import org.zerock.schedulemanagementdevelop.schedule.entity.Schedule;
 
 @Repository
-public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
+public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+
+    //일정 목록 페이징 조회
     @Query("""
-    SELECT new org.zerock.schedulemanagementdevelop.schedule.dto.SchedulePageResponse(
-        s.id,
-        s.title,
-        s.content,
-        COUNT(c),
-        s.createdAt,
-        s.modifiedAt,
-        u.username
-    )
-    FROM Schedule s
-    JOIN s.user u
-    LEFT JOIN s.comments c
-    GROUP BY s.id, u.username
-""")
+                SELECT new org.zerock.schedulemanagementdevelop.schedule.dto.SchedulePageResponse(
+                    s.id,
+                    s.title,
+                    s.content,
+                    COUNT(c),
+                    s.createdAt,
+                    s.modifiedAt,
+                    u.username
+                )
+                FROM Schedule s
+                JOIN s.user u
+                LEFT JOIN s.comments c
+                WHERE (:userId IS NULL OR u.id = :userId)
+                GROUP BY s.id, u.username
+            """)
     Page<SchedulePageResponse> findAllSchedules(Long userId, Pageable pageable);
 }

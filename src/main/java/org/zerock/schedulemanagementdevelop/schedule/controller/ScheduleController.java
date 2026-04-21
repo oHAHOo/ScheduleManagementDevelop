@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.schedulemanagementdevelop.exception.UnauthorizedException;
-import org.zerock.schedulemanagementdevelop.user.dto.SessionUser;
 import org.zerock.schedulemanagementdevelop.schedule.dto.*;
 import org.zerock.schedulemanagementdevelop.schedule.service.ScheduleService;
+import org.zerock.schedulemanagementdevelop.user.dto.SessionUser;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,38 +22,32 @@ public class ScheduleController {
 
     //일정 등록
     @PostMapping("/schedules")
-    public ResponseEntity<CreateScheduleResponse> saveSchedule (@Valid @RequestBody CreateScheduleRequest createScheduleRequest, HttpSession httpSession) {
+    public ResponseEntity<CreateScheduleResponse> saveSchedule(@Valid @RequestBody CreateScheduleRequest createScheduleRequest, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
-        if(sessionUser==null){
+        if (sessionUser == null) {
             throw new UnauthorizedException("로그인이 필요합니다");
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.saveSchedule(createScheduleRequest,sessionUser.getId()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.saveSchedule(createScheduleRequest, sessionUser.getId()));
     }
 
     //단일 일정 조회
     @GetMapping("/schedules/{id}")
-    public ResponseEntity<GetScheduleResponse> getOneSchedule (@PathVariable Long id) {
+    public ResponseEntity<GetScheduleResponse> getOneSchedule(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findById(id));
     }
 
     //전체 일정 조회
     @GetMapping("/schedules")
-    public ResponseEntity<Page<SchedulePageResponse>> getAllSchedules (
-            @RequestParam(required = false) Long userId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<SchedulePageResponse>> getAllSchedules(@RequestParam(required = false) Long userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "modifiedAt"));
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(userId, pageable));
     }
 
     //일정 수정
     @PutMapping("/schedules/{id}")
-    public ResponseEntity<UpdateScheduleResponse> updateSchedule (
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateScheduleRequest updateScheduleRequest,
-            HttpSession httpSession) {
+    public ResponseEntity<UpdateScheduleResponse> updateSchedule(@PathVariable Long id, @Valid @RequestBody UpdateScheduleRequest updateScheduleRequest, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
-        if(sessionUser==null){
+        if (sessionUser == null) {
             throw new UnauthorizedException("로그인이 필요합니다.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateSchedule(id, updateScheduleRequest, sessionUser.getId()));
@@ -61,10 +55,10 @@ public class ScheduleController {
 
     //일정 삭제
     @DeleteMapping("/schedules/{id}")
-    public ResponseEntity<Void> deleteSchedule (@PathVariable Long id, HttpSession httpSession) {
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
 
-        if(sessionUser==null){
+        if (sessionUser == null) {
             throw new UnauthorizedException("로그인이 필요합니다.");
         }
         scheduleService.deleteSchedule(id, sessionUser.getId());
