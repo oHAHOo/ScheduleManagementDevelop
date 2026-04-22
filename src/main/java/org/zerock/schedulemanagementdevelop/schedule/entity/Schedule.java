@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.zerock.schedulemanagementdevelop.BaseEntity;
+import org.zerock.schedulemanagementdevelop.common.BaseEntity;
 import org.zerock.schedulemanagementdevelop.comment.entity.Comment;
 import org.zerock.schedulemanagementdevelop.user.entity.User;
 
@@ -36,7 +36,7 @@ public class Schedule extends BaseEntity {
     private User user;
 
     // 해당 일정의 댓글 목록 (1:N)
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
     public Schedule(User user, String title, String content) {
