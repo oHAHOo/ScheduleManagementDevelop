@@ -7,7 +7,7 @@ import lombok.Getter;
 public class CreateCommentRequest {
 
     @NotBlank
-    private String content; //댓글 내용
+    private final String content; //댓글 내용
 
     public CreateCommentRequest(String content) {
         this.content = content;
