@@ -9,6 +9,7 @@ import org.zerock.schedulemanagementdevelop.comment.dto.CreateCommentResponse;
 import org.zerock.schedulemanagementdevelop.comment.dto.GetCommentResponse;
 import org.zerock.schedulemanagementdevelop.comment.entity.Comment;
 import org.zerock.schedulemanagementdevelop.comment.repository.CommentRepository;
+import org.zerock.schedulemanagementdevelop.config.SessionUtils;
 import org.zerock.schedulemanagementdevelop.exception.ScheduleNotFoundException;
 import org.zerock.schedulemanagementdevelop.exception.UnauthorizedException;
 import org.zerock.schedulemanagementdevelop.exception.UserNotFoundException;
@@ -18,8 +19,8 @@ import org.zerock.schedulemanagementdevelop.user.dto.SessionUser;
 import org.zerock.schedulemanagementdevelop.user.entity.User;
 import org.zerock.schedulemanagementdevelop.user.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +36,7 @@ public class CommentService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleNotFoundException("일정을 찾을 수 없습니다."));
 
         //로그인 유저 확인
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
-        if (sessionUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
+        SessionUser sessionUser = SessionUtils.getLoginUser(httpSession);
 
         //유저 조회
         User user = userRepository.findById(sessionUser.getId()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
@@ -54,18 +52,14 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<GetCommentResponse> findAll(Long scheduleId) {
         //특정 일정의 댓글 목록 조회
-        List<Comment> comments = commentRepository.findBySchedule_Id(scheduleId);
-        List<GetCommentResponse> dtos = new ArrayList<>();
-        for (Comment comment : comments) {
-            GetCommentResponse dto = new GetCommentResponse(
-                    comment.getId(),
-                    comment.getUser().getId(),
-                    comment.getSchedule().getId(),
-                    comment.getContent(),
-                    comment.getCreatedAt(),
-                    comment.getModifiedAt());
-            dtos.add(dto);
-        }
-        return dtos;
+        return commentRepository.findBySchedule_Id(scheduleId).stream()
+                .map(comment -> new GetCommentResponse(
+                        comment.getId(),
+                        comment.getUser().getId(),
+                        comment.getSchedule().getId(),
+                        comment.getContent(),
+                        comment.getCreatedAt(),
+                        comment.getModifiedAt()
+                )).collect(Collectors.toList());
     }
 }
