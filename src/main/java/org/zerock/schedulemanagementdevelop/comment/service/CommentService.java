@@ -11,7 +11,6 @@ import org.zerock.schedulemanagementdevelop.comment.entity.Comment;
 import org.zerock.schedulemanagementdevelop.comment.repository.CommentRepository;
 import org.zerock.schedulemanagementdevelop.config.SessionUtils;
 import org.zerock.schedulemanagementdevelop.exception.ScheduleNotFoundException;
-import org.zerock.schedulemanagementdevelop.exception.UnauthorizedException;
 import org.zerock.schedulemanagementdevelop.exception.UserNotFoundException;
 import org.zerock.schedulemanagementdevelop.schedule.entity.Schedule;
 import org.zerock.schedulemanagementdevelop.schedule.repository.ScheduleRepository;
