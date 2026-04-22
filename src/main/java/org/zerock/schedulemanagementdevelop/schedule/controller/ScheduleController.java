@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.schedulemanagementdevelop.config.SessionUtils;
 import org.zerock.schedulemanagementdevelop.exception.UnauthorizedException;
 import org.zerock.schedulemanagementdevelop.schedule.dto.*;
 import org.zerock.schedulemanagementdevelop.schedule.service.ScheduleService;
@@ -17,7 +18,7 @@ import org.zerock.schedulemanagementdevelop.user.dto.SessionUser;
 
 @RestController
 @RequiredArgsConstructor
-public class ScheduleController {
+public class ScheduleController extends SessionUtils {
     private final ScheduleService scheduleService;
 
     //일정 등록
@@ -46,21 +47,14 @@ public class ScheduleController {
     //일정 수정
     @PutMapping("/schedules/{id}")
     public ResponseEntity<UpdateScheduleResponse> updateSchedule(@PathVariable Long id, @Valid @RequestBody UpdateScheduleRequest updateScheduleRequest, HttpSession httpSession) {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
-        if (sessionUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
+        SessionUser sessionUser = getLoginUser(httpSession);
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateSchedule(id, updateScheduleRequest, sessionUser.getId()));
     }
 
     //일정 삭제
     @DeleteMapping("/schedules/{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, HttpSession httpSession) {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
-
-        if (sessionUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
+        SessionUser sessionUser = getLoginUser(httpSession);
         scheduleService.deleteSchedule(id, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
