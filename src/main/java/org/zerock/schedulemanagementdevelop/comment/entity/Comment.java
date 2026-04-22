@@ -1,16 +1,17 @@
 package org.zerock.schedulemanagementdevelop.comment.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.zerock.schedulemanagementdevelop.BaseEntity;
+import org.zerock.schedulemanagementdevelop.common.BaseEntity;
 import org.zerock.schedulemanagementdevelop.schedule.entity.Schedule;
 import org.zerock.schedulemanagementdevelop.user.entity.User;
 
 @Entity
 @Getter
 @Table(name = "comments")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
     @Id

@@ -1,4 +1,4 @@
-package org.zerock.schedulemanagementdevelop;
+package org.zerock.schedulemanagementdevelop.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.schedulemanagementdevelop.exception.UnauthorizedException;
+import org.zerock.schedulemanagementdevelop.config.SessionUtils;
 import org.zerock.schedulemanagementdevelop.user.dto.*;
 import org.zerock.schedulemanagementdevelop.user.service.UserService;
 
@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+public class UserController extends SessionUtils {
     private final UserService userService;
 
     //회원가입
@@ -52,20 +52,14 @@ public class UserController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateUserRequest updateUserRequest,
             HttpSession httpSession) {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
-        if (sessionUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
+        SessionUser sessionUser = getLoginUser(httpSession);
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(id, updateUserRequest, sessionUser.getId()));
     }
 
     //유저 삭제
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id, HttpSession httpSession) {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("loginUser");
-        if (sessionUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
+        SessionUser sessionUser = getLoginUser(httpSession);
         userService.deleteById(id, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

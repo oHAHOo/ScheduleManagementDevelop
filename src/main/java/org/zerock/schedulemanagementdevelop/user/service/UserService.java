@@ -1,6 +1,5 @@
 package org.zerock.schedulemanagementdevelop.user.service;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,8 +12,8 @@ import org.zerock.schedulemanagementdevelop.user.dto.*;
 import org.zerock.schedulemanagementdevelop.user.entity.User;
 import org.zerock.schedulemanagementdevelop.user.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,19 +52,14 @@ public class UserService {
     //사용자 전체 조회
     @Transactional(readOnly = true)
     public List<GetUserResponse> findAll() {
-        List<User> users = userRepository.findAll();
-        List<GetUserResponse> dtos = new ArrayList<>();
-        for (User user : users) {
-            GetUserResponse dto = new GetUserResponse(
-                    user.getId(),
-                    user.getUsername(),
-                    user.getEmail(),
-                    user.getCreatedAt(),
-                    user.getModifiedAt()
-            );
-            dtos.add(dto);
-        }
-        return dtos;
+        return userRepository.findAll().stream().
+                map(user -> new GetUserResponse(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getCreatedAt(),
+                        user.getModifiedAt()
+                )).collect(Collectors.toList());
     }
 
     //사용자 정보 수정
@@ -97,7 +91,7 @@ public class UserService {
 
     //로그인
     @Transactional(readOnly = true)
-    public SessionUser login(@Valid LoginRequest loginRequest) {
+    public SessionUser login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
                 () -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
 
